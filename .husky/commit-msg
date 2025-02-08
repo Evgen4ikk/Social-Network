@@ -1,0 +1,6 @@
+message=$(cat "$1")
+emojis=("✨" "🚀" "🔥" "🐛" "🔧" "📦" "✅" "🌟" "📌" "🎉")
+
+random_emoji=${emojis[$RANDOM % ${#emojis[@]}]}
+
+echo "$random_emoji $message" > "$1"
