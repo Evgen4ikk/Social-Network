@@ -13,6 +13,8 @@
     "prod": "node dist/main",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
+    "lint-staged": "lint-staged",
+    "prepare": "husky",
     "lint-inspector": "npx @eslint/config-inspector"
   },
   "dependencies": {
