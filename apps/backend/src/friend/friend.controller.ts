@@ -1,5 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
+
+import { ApiAuthorizedOnly } from '@/shared/guards/auth.guard';
 
 import { AcceptFriendRequestDto } from './dto/accept-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
@@ -7,6 +16,8 @@ import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { FriendService } from './friend.service';
 
 @ApiTags('Friend')
+@ApiAuthorizedOnly()
+@ApiBearerAuth()
 @Controller('friends')
 export class FriendController {
   constructor(private readonly friendService: FriendService) {}

@@ -5,6 +5,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 
 import { User } from '@/user/entity/user.entity';
@@ -42,8 +43,8 @@ export class FriendService {
     if (existing) throw new ConflictException('Запрос уже существует');
 
     const request = await this.friendRepo.save({
-      requester: sender,
-      recipient,
+      requester: instanceToPlain(sender),
+      recipient: instanceToPlain(recipient),
       status: FriendStatus.PENDING
     });
 
@@ -105,7 +106,7 @@ export class FriendService {
     return {
       items: items.map((item) => ({
         id: item.id,
-        friend: item.requester.id === userId ? item.recipient : item.requester,
+        friend: instanceToPlain(item.requester.id === userId ? item.recipient : item.requester),
         status: item.status,
         createdAt: item.createdAt
       })),

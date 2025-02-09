@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
 
 import { AuthService } from '@/auth/auth.service';
 
@@ -11,10 +12,6 @@ export class UserService {
 
   async getProfile(token: string) {
     const user = await this.authService.getUserByToken(token);
-    return {
-      id: user.id,
-      name: user.name,
-      login: user.login
-    };
+    return instanceToPlain(user);
   }
 }
