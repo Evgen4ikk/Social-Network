@@ -1,12 +1,43 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createTheme } from "@mantine/core";
+import { QueryClient } from "@tanstack/react-query";
+import ReactDOM from "react-dom/client";
 
-import App from "./App.tsx";
+import type { ProvidersProps } from "./providers";
 
-import "./index.css";
+import { App } from "./App";
+import { Providers } from "./providers";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+
+export const init = () => {
+  const root = ReactDOM.createRoot(
+    document.querySelector("#root") as HTMLElement,
+  );
+
+  const providersProps: Omit<ProvidersProps, "children"> = {
+    query: {
+      client: new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+    },
+    mantine: {
+      theme: createTheme({
+        fontFamily: "Roboto, sans-serif",
+        primaryColor: "dark",
+      }),
+    },
+  };
+
+  root.render(
+    <Providers {...providersProps}>
+      <App />
+    </Providers>,
+  );
+};
+
+init();
