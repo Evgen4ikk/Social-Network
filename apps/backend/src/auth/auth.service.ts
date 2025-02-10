@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
@@ -22,6 +27,7 @@ export class AuthService {
     const { login, password, name } = signupDto;
 
     const existingUser = await this.userRepository.findOne({ where: { login } });
+
     if (existingUser) {
       throw new ConflictException('Пользователь с таким логином уже существует');
     }
@@ -50,7 +56,7 @@ export class AuthService {
   }
 
   async signOut(response: Response) {
-    response.clearCookie('access_jwt', {
+    response.clearCookie('session', {
       sameSite: 'none',
       httpOnly: true,
       secure: true
@@ -61,11 +67,11 @@ export class AuthService {
 
   private async generateTokens(userId: number, response: Response) {
     const payload = { userId };
-    const access_jwt = await this.jwtService.signAsync(payload, {
+    const session = await this.jwtService.signAsync(payload, {
       expiresIn: '1h'
     });
 
-    response.cookie('access_jwt', access_jwt, {
+    response.cookie('session', session, {
       expires: new Date(Date.now() + 60 * 60 * 1000),
       sameSite: 'none',
       httpOnly: true,
@@ -86,8 +92,8 @@ export class AuthService {
     });
     const user = await this.userRepository.findOneBy({ id: payload.userId });
 
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new NotFoundException();
 
-    return user;
+    return { user };
   }
 }

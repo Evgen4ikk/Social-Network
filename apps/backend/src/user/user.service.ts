@@ -12,6 +12,7 @@ export class UserService {
 
   async getProfile(token: string) {
     const user = await this.authService.getUserByToken(token);
+
     return instanceToPlain(user);
   }
 }

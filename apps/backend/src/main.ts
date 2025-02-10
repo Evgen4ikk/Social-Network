@@ -12,12 +12,15 @@ async function bootstrap() {
   const config = new DocumentBuilder().setTitle('Social Network API').setVersion('1.0').build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    yamlDocumentUrl: '/api-yaml'
+  });
 
   app.use(cookieParser());
 
   app.enableCors({
-    origin: '*'
+    origin: 'http://localhost:5173',
+    credentials: true
   });
 
   app.useWebSocketAdapter(new IoAdapter(app));

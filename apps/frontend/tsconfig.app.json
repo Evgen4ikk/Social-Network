@@ -6,28 +6,28 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "moduleDetection": "force",
     "useDefineForClassFields": true,
-
-    "baseUrl": "./",
+    "baseUrl": ".",
     "module": "ESNext",
 
-    "moduleResolution": "bundler",
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["./*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/routes/*": ["./src/routes/*"],
-      "@/types/*": ["./generated/api/*"]
+      "@/*": ["src/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/routes/*": ["src/routes/*"],
+      "@/api/*": ["src/utils/api/*"],
+      "@/generated/*": ["generated/*"]
     },
     "allowImportingTsExtensions": true,
 
+    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
     "isolatedModules": true,
-    "skipLibCheck": true,
-    "noUncheckedSideEffectImports": true
+    "skipLibCheck": true
   },
   "include": ["src"]
 }

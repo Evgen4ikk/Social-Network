@@ -1,4 +1,5 @@
 import { Controller, Get, Req } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { ApiAuthorizedOnly } from '@/shared/guards/auth.guard';
@@ -11,8 +12,9 @@ export class UserController {
 
   @Get()
   @ApiAuthorizedOnly()
+  @ApiOperation({ summary: 'Получить данные профиля' })
   getProfile(@Req() req: Request) {
-    const token = req.cookies.access_jwt;
+    const token = req.cookies.session;
 
     return this.userService.getProfile(token);
   }
