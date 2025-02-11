@@ -6,6 +6,12 @@
  */
 
 export interface FriendControllerGetFriendsParams {
-limit?: unknown;
-page?: unknown;
+/**
+ * Количество элементов на странице
+ */
+limit?: number;
+/**
+ * Номер страницы
+ */
+page?: number;
 }

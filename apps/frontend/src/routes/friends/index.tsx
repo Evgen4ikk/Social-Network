@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/home/')({
+export const Route = createFileRoute('/friends/')({
   beforeLoad: ({ context }) => {
     if (!context.isAuthenticated) {
       throw redirect({

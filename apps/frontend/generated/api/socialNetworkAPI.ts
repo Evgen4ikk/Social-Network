@@ -13,6 +13,8 @@ import * as axios from 'axios';
 
 import type {
   FriendControllerGetFriendsParams,
+  GetFriendsResponse,
+  GetUserResponse,
   SendFriendRequestDto,
   SigninDto,
   SignupDto
@@ -24,7 +26,7 @@ import type {
   /**
  * @summary Получить данные профиля
  */
-export const userControllerGetProfile = <TData = AxiosResponse<void>>(
+export const userControllerGetProfile = <TData = AxiosResponse<GetUserResponse>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
@@ -102,7 +104,7 @@ export const friendControllerRemoveFriend = <TData = AxiosResponse<void>>(
 /**
  * @summary Получить список друзей
  */
-export const friendControllerGetFriends = <TData = AxiosResponse<void>>(
+export const friendControllerGetFriends = <TData = AxiosResponse<GetFriendsResponse>>(
     userId: number,
     params?: FriendControllerGetFriendsParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
@@ -113,11 +115,11 @@ export const friendControllerGetFriends = <TData = AxiosResponse<void>>(
     );
   }
 
-export type UserControllerGetProfileResult = AxiosResponse<void>
+export type UserControllerGetProfileResult = AxiosResponse<GetUserResponse>
 export type AuthControllerSignUpResult = AxiosResponse<void>
 export type AuthControllerSignInResult = AxiosResponse<void>
 export type AuthControllerSignOutResult = AxiosResponse<void>
 export type FriendControllerSendRequestResult = AxiosResponse<void>
 export type FriendControllerAcceptRequestResult = AxiosResponse<void>
 export type FriendControllerRemoveFriendResult = AxiosResponse<void>
-export type FriendControllerGetFriendsResult = AxiosResponse<void>
+export type FriendControllerGetFriendsResult = AxiosResponse<GetFriendsResponse>

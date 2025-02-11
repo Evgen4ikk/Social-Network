@@ -28,7 +28,7 @@ export const useSigninPage = () => {
       {
         onSuccess: () => {
           set(true);
-          navigate({ to: '/home' });
+          navigate({ to: '/profile' });
         }
       }
     );

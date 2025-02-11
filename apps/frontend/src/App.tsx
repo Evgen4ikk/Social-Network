@@ -2,7 +2,6 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 import { useGetUserQuery } from '@/api/hooks';
-import { Layout } from '@/components/Layout';
 import { routeTree } from '@/generated/router';
 import { useSession } from '@/utils/contexts/session';
 
@@ -20,7 +19,7 @@ declare module '@tanstack/react-router' {
 }
 
 export const App = () => {
-  const { value: isAuthenticated, set } = useSession();
+  const { value: isAuthenticated, setValue, setUser } = useSession();
   const { data, isLoading, isError } = useGetUserQuery({
     options: {
       retry: false
@@ -29,22 +28,15 @@ export const App = () => {
 
   useEffect(() => {
     if (data?.data.user) {
-      set(true);
+      setValue(true);
+      setUser(data.data.user);
     } else if (isError || !isLoading) {
-      set(false);
+      setValue(false);
     }
-  }, [data, isError, isLoading, set]);
+  }, [data, isError, isLoading, setValue]);
 
   if (isLoading) {
     return <div>Loading...</div>;
-  }
-
-  if (isAuthenticated) {
-    return (
-      <Layout>
-        <RouterProvider context={{ isAuthenticated }} router={router} scrollRestoration />
-      </Layout>
-    );
   }
 
   return <RouterProvider context={{ isAuthenticated }} router={router} scrollRestoration />;

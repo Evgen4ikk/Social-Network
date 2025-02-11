@@ -13,7 +13,9 @@
 import { Route as rootRoute } from './../../src/routes/__root'
 import { Route as SignupIndexImport } from './../../src/routes/signup/index'
 import { Route as SigninIndexImport } from './../../src/routes/signin/index'
-import { Route as HomeIndexImport } from './../../src/routes/home/index'
+import { Route as ProfileIndexImport } from './../../src/routes/profile/index'
+import { Route as MessengerIndexImport } from './../../src/routes/messenger/index'
+import { Route as FriendsIndexImport } from './../../src/routes/friends/index'
 
 // Create/Update Routes
 
@@ -33,23 +35,53 @@ const SigninIndexRoute = SigninIndexImport.update({
   import('./../../src/routes/signin/index.lazy').then((d) => d.Route),
 )
 
-const HomeIndexRoute = HomeIndexImport.update({
-  id: '/home/',
-  path: '/home/',
+const ProfileIndexRoute = ProfileIndexImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./../../src/routes/home/index.lazy').then((d) => d.Route),
+  import('./../../src/routes/profile/index.lazy').then((d) => d.Route),
+)
+
+const MessengerIndexRoute = MessengerIndexImport.update({
+  id: '/messenger/',
+  path: '/messenger/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./../../src/routes/messenger/index.lazy').then((d) => d.Route),
+)
+
+const FriendsIndexRoute = FriendsIndexImport.update({
+  id: '/friends/',
+  path: '/friends/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./../../src/routes/friends/index.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/home/': {
-      id: '/home/'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeIndexImport
+    '/friends/': {
+      id: '/friends/'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof FriendsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/messenger/': {
+      id: '/messenger/'
+      path: '/messenger'
+      fullPath: '/messenger'
+      preLoaderRoute: typeof MessengerIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
     '/signin/': {
@@ -72,41 +104,57 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/home': typeof HomeIndexRoute
+  '/friends': typeof FriendsIndexRoute
+  '/messenger': typeof MessengerIndexRoute
+  '/profile': typeof ProfileIndexRoute
   '/signin': typeof SigninIndexRoute
   '/signup': typeof SignupIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/home': typeof HomeIndexRoute
+  '/friends': typeof FriendsIndexRoute
+  '/messenger': typeof MessengerIndexRoute
+  '/profile': typeof ProfileIndexRoute
   '/signin': typeof SigninIndexRoute
   '/signup': typeof SignupIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/home/': typeof HomeIndexRoute
+  '/friends/': typeof FriendsIndexRoute
+  '/messenger/': typeof MessengerIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/signin/': typeof SigninIndexRoute
   '/signup/': typeof SignupIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/home' | '/signin' | '/signup'
+  fullPaths: '/friends' | '/messenger' | '/profile' | '/signin' | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/home' | '/signin' | '/signup'
-  id: '__root__' | '/home/' | '/signin/' | '/signup/'
+  to: '/friends' | '/messenger' | '/profile' | '/signin' | '/signup'
+  id:
+    | '__root__'
+    | '/friends/'
+    | '/messenger/'
+    | '/profile/'
+    | '/signin/'
+    | '/signup/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  HomeIndexRoute: typeof HomeIndexRoute
+  FriendsIndexRoute: typeof FriendsIndexRoute
+  MessengerIndexRoute: typeof MessengerIndexRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
   SigninIndexRoute: typeof SigninIndexRoute
   SignupIndexRoute: typeof SignupIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  HomeIndexRoute: HomeIndexRoute,
+  FriendsIndexRoute: FriendsIndexRoute,
+  MessengerIndexRoute: MessengerIndexRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
   SigninIndexRoute: SigninIndexRoute,
   SignupIndexRoute: SignupIndexRoute,
 }
@@ -121,13 +169,21 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/home/",
+        "/friends/",
+        "/messenger/",
+        "/profile/",
         "/signin/",
         "/signup/"
       ]
     },
-    "/home/": {
-      "filePath": "home/index.tsx"
+    "/friends/": {
+      "filePath": "friends/index.tsx"
+    },
+    "/messenger/": {
+      "filePath": "messenger/index.tsx"
+    },
+    "/profile/": {
+      "filePath": "profile/index.tsx"
     },
     "/signin/": {
       "filePath": "signin/index.tsx"

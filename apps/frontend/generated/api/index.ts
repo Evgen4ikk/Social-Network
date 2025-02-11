@@ -7,8 +7,11 @@
 
 export * from './friend';
 export * from './friendControllerGetFriendsParams';
+export * from './friendResponse';
+export * from './getFriendsResponse';
 export * from './getUserResponse';
 export * from './sendFriendRequestDto';
 export * from './signinDto';
 export * from './signupDto';
+export * from './user';
 export * from './userResponse';

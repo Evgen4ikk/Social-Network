@@ -32,7 +32,7 @@ export const useSignupPage = () => {
       {
         onSuccess: () => {
           set(true);
-          navigate({ to: '/home' });
+          navigate({ to: '/profile' });
         }
       }
     );

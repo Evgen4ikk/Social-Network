@@ -69,7 +69,7 @@ export class FriendService {
       this.friendGateway.sendFriendStatusUpdate(id, FriendStatus.ACCEPTED);
     });
 
-    return updated;
+    return instanceToPlain(updated);
   }
 
   async removeFriend(userId: number, friendId: number) {
@@ -93,7 +93,7 @@ export class FriendService {
   }
 
   async getFriends(userId: number, page = 1, limit = 10) {
-    const [items, total] = await this.friendRepo.findAndCount({
+    const [friends, total] = await this.friendRepo.findAndCount({
       where: [
         { requester: { id: userId }, status: FriendStatus.ACCEPTED },
         { recipient: { id: userId }, status: FriendStatus.ACCEPTED }
@@ -104,11 +104,12 @@ export class FriendService {
     });
 
     return {
-      items: items.map((item) => ({
-        id: item.id,
-        friend: instanceToPlain(item.requester.id === userId ? item.recipient : item.requester),
-        status: item.status,
-        createdAt: item.createdAt
+      friends: friends.map((friend) => ({
+        id: friend.id,
+        friend: instanceToPlain(
+          friend.requester.id === userId ? friend.recipient : friend.requester
+        ),
+        status: friend.status
       })),
       total,
       page,
