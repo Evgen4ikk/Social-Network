@@ -2,6 +2,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 import { useGetUserQuery } from '@/api/hooks';
+import { Layout } from '@/components/Layout';
 import { routeTree } from '@/generated/router';
 import { useSession } from '@/utils/contexts/session';
 
@@ -36,6 +37,14 @@ export const App = () => {
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isAuthenticated) {
+    return (
+      <Layout>
+        <RouterProvider context={{ isAuthenticated }} router={router} scrollRestoration />
+      </Layout>
+    );
   }
 
   return <RouterProvider context={{ isAuthenticated }} router={router} scrollRestoration />;
