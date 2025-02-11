@@ -29,6 +29,9 @@ export const init = () => {
         primaryColor: 'dark'
       }),
       defaultColorScheme: 'dark'
+    },
+    session: {
+      initialSession: undefined
     }
   };
 
