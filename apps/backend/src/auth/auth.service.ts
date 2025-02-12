@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
+import { instanceToPlain } from 'class-transformer';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
 
@@ -90,10 +91,26 @@ export class AuthService {
     const payload: { userId: number } = await this.jwtService.verifyAsync(token, {
       secret: process.env.JWT_SECRET
     });
-    const user = await this.userRepository.findOneBy({ id: payload.userId });
+
+    const user = await this.userRepository.findOne({
+      where: { id: payload.userId },
+      relations: [
+        'sentRequests',
+        'receivedRequests',
+        'sentRequests.recipient',
+        'receivedRequests.requester'
+      ]
+    });
 
     if (!user) throw new NotFoundException();
 
-    return { user };
+    const { sentRequests, receivedRequests, ...cleanUser } = instanceToPlain(user);
+
+    return {
+      user: {
+        ...cleanUser,
+        friends: user.friends
+      }
+    };
   }
 }

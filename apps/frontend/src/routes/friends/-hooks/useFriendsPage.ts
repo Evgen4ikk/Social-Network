@@ -7,7 +7,7 @@ export const useFriendsPage = () => {
 
   return {
     state: {
-      friends: friends.data?.data.friends || []
+      friends: friends.data?.data.friends.filter((friend) => friend.status === 'ACCEPTED') || []
     }
   };
 };

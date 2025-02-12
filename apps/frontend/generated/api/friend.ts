@@ -5,4 +5,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface Friend { [key: string]: unknown }
+export interface Friend {
+  /** ID пользователя */
+  id: number;
+  /** Логин пользователя */
+  login: string;
+  /** Имя пользователя */
+  name: string;
+}

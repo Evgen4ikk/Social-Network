@@ -13,7 +13,7 @@ import { signupSchema } from '../-constants/signupSchema';
 
 export const useSignupPage = () => {
   const navigate = useNavigate();
-  const { set } = useSession();
+  const { setValue } = useSession();
   const { mutateAsync: postSignup } = usePostSignupMutation();
 
   const form = useForm<SignupFormData>({
@@ -31,7 +31,7 @@ export const useSignupPage = () => {
       },
       {
         onSuccess: () => {
-          set(true);
+          setValue(true);
           navigate({ to: '/profile' });
         }
       }

@@ -7,14 +7,12 @@
 import type { Friend } from './friend';
 
 export interface UserResponse {
+  /** Друзья */
+  friends: Friend[];
   /** ID пользователя */
   id: number;
   /** Логин пользователя */
   login: string;
   /** Имя пользователя */
   name: string;
-  /** Заявки в друзья */
-  receivedRequests: Friend[];
-  /** Заявки в друзья */
-  sentRequests: Friend[];
 }

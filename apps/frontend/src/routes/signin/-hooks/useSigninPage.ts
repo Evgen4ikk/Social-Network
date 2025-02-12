@@ -13,7 +13,7 @@ import { signinSchema } from '../-constatnts/signinSchema';
 
 export const useSigninPage = () => {
   const navigate = useNavigate();
-  const { set } = useSession();
+  const { setValue } = useSession();
   const { mutateAsync: postSignin, isPending } = usePostSigninMutation();
 
   const form = useForm<SigninFormData>({
@@ -27,7 +27,7 @@ export const useSigninPage = () => {
       },
       {
         onSuccess: () => {
-          set(true);
+          setValue(true);
           navigate({ to: '/profile' });
         }
       }

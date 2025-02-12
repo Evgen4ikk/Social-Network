@@ -4,11 +4,11 @@
  * Social Network API
  * OpenAPI spec version: 1.0
  */
-import type { UserResponse } from './userResponse';
+import type { Friend } from './friend';
 
 export interface FriendResponse {
   /** Пользователь */
-  friend: UserResponse;
+  friend: Friend;
   /** ID пользователя */
   id: number;
   /** Статус дружбы */

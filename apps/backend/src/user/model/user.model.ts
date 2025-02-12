@@ -1,20 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Friend } from '@/friend/entities/friend.entity';
+import { Friend } from '@/friend/model/friend.model';
 
-import { User } from '../entity/user.entity';
-
-export class UserResponse implements Omit<User, 'password'> {
+export class UserResponse {
   @ApiProperty({ description: 'ID пользователя', example: 1 })
   id: number;
+
   @ApiProperty({ description: 'Логин пользователя', example: 'test' })
   login: string;
+
   @ApiProperty({ description: 'Имя пользователя', example: 'John Doe' })
   name: string;
-  @ApiProperty({ description: 'Заявки в друзья', type: [Friend] })
-  receivedRequests: Friend[];
-  @ApiProperty({ description: 'Заявки в друзья', type: [Friend] })
-  sentRequests: Friend[];
+
+  @ApiProperty({
+    description: 'Друзья',
+    type: () => Friend,
+    isArray: true
+  })
+  friends: Friend[];
 }
 
 export class GetUserResponse {

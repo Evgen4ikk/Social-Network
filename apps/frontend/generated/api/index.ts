@@ -13,5 +13,4 @@ export * from './getUserResponse';
 export * from './sendFriendRequestDto';
 export * from './signinDto';
 export * from './signupDto';
-export * from './user';
 export * from './userResponse';
