@@ -48,7 +48,7 @@ export class FriendService {
       status: FriendStatus.PENDING
     });
 
-    this.friendGateway.sendFriendRequestUpdate(recipientId);
+    this.friendGateway.sendFriendRequestUpdate(sender, recipientId);
     return request;
   }
 
@@ -65,11 +65,30 @@ export class FriendService {
       status: FriendStatus.ACCEPTED
     });
 
-    [updated.requester.id, updated.recipient.id].forEach((id) => {
-      this.friendGateway.sendFriendStatusUpdate(id, FriendStatus.ACCEPTED);
-    });
+    this.friendGateway.sendFriendStatusUpdate(
+      updated.recipient,
+      updated.requester,
+      FriendStatus.ACCEPTED
+    );
 
     return instanceToPlain(updated);
+  }
+
+  async cancelFriendRequest(requestId: number) {
+    const request = await this.friendRepo.findOne({
+      where: { id: requestId },
+      relations: ['requester', 'recipient']
+    });
+
+    if (!request) throw new NotFoundException('Запрос не найден');
+
+    await this.friendRepo.remove(request);
+
+    this.friendGateway.sendFriendStatusUpdate(
+      request.recipient,
+      request.requester,
+      FriendStatus.DECLINED
+    );
   }
 
   async removeFriend(userId: number, friendId: number) {
@@ -83,13 +102,13 @@ export class FriendService {
 
     if (!relation) throw new NotFoundException('Связь не найдена');
 
+    this.friendGateway.sendFriendStatusUpdate(
+      relation.recipient,
+      relation.requester,
+      FriendStatus.DELETED
+    );
+
     await this.friendRepo.remove(relation);
-
-    [userId, friendId].forEach((id) => {
-      this.friendGateway.sendFriendStatusUpdate(id, FriendStatus.DECLINED);
-    });
-
-    return { message: 'Дружба расторгнута' };
   }
 
   async getFriends(userId: number, page = 1, limit = 10) {

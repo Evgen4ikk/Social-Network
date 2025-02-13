@@ -16,6 +16,7 @@ import { Route as SigninIndexImport } from './../../src/routes/signin/index'
 import { Route as ProfileIndexImport } from './../../src/routes/profile/index'
 import { Route as MessengerIndexImport } from './../../src/routes/messenger/index'
 import { Route as FriendsIndexImport } from './../../src/routes/friends/index'
+import { Route as UserIdIndexImport } from './../../src/routes/user/$id/index'
 
 // Create/Update Routes
 
@@ -59,6 +60,14 @@ const FriendsIndexRoute = FriendsIndexImport.update({
   import('./../../src/routes/friends/index.lazy').then((d) => d.Route),
 )
 
+const UserIdIndexRoute = UserIdIndexImport.update({
+  id: '/user/$id/',
+  path: '/user/$id/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./../../src/routes/user/$id/index.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -98,6 +107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupIndexImport
       parentRoute: typeof rootRoute
     }
+    '/user/$id/': {
+      id: '/user/$id/'
+      path: '/user/$id'
+      fullPath: '/user/$id'
+      preLoaderRoute: typeof UserIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -109,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileIndexRoute
   '/signin': typeof SigninIndexRoute
   '/signup': typeof SignupIndexRoute
+  '/user/$id': typeof UserIdIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -117,6 +134,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileIndexRoute
   '/signin': typeof SigninIndexRoute
   '/signup': typeof SignupIndexRoute
+  '/user/$id': typeof UserIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -126,13 +144,26 @@ export interface FileRoutesById {
   '/profile/': typeof ProfileIndexRoute
   '/signin/': typeof SigninIndexRoute
   '/signup/': typeof SignupIndexRoute
+  '/user/$id/': typeof UserIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/friends' | '/messenger' | '/profile' | '/signin' | '/signup'
+  fullPaths:
+    | '/friends'
+    | '/messenger'
+    | '/profile'
+    | '/signin'
+    | '/signup'
+    | '/user/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/friends' | '/messenger' | '/profile' | '/signin' | '/signup'
+  to:
+    | '/friends'
+    | '/messenger'
+    | '/profile'
+    | '/signin'
+    | '/signup'
+    | '/user/$id'
   id:
     | '__root__'
     | '/friends/'
@@ -140,6 +171,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/signin/'
     | '/signup/'
+    | '/user/$id/'
   fileRoutesById: FileRoutesById
 }
 
@@ -149,6 +181,7 @@ export interface RootRouteChildren {
   ProfileIndexRoute: typeof ProfileIndexRoute
   SigninIndexRoute: typeof SigninIndexRoute
   SignupIndexRoute: typeof SignupIndexRoute
+  UserIdIndexRoute: typeof UserIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -157,6 +190,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileIndexRoute: ProfileIndexRoute,
   SigninIndexRoute: SigninIndexRoute,
   SignupIndexRoute: SignupIndexRoute,
+  UserIdIndexRoute: UserIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -173,7 +207,8 @@ export const routeTree = rootRoute
         "/messenger/",
         "/profile/",
         "/signin/",
-        "/signup/"
+        "/signup/",
+        "/user/$id/"
       ]
     },
     "/friends/": {
@@ -190,6 +225,9 @@ export const routeTree = rootRoute
     },
     "/signup/": {
       "filePath": "signup/index.tsx"
+    },
+    "/user/$id/": {
+      "filePath": "user/$id/index.tsx"
     }
   }
 }

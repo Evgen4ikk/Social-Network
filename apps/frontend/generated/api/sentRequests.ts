@@ -6,11 +6,11 @@
  */
 import type { User } from './user';
 
-export interface FriendResponse {
-  /** Пользователь */
-  friend: User;
-  /** ID пользователя */
+export interface SentRequests {
+  /** ID запроса */
   id: number;
+  /** Пользователь */
+  recipient: User;
   /** Статус дружбы */
   status: string;
 }

@@ -1,6 +1,7 @@
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+
 import { Layout } from '@/components/Layout';
 import { useSession } from '@/utils/contexts/session';
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 
 interface RouterContext {
   isAuthenticated: boolean;

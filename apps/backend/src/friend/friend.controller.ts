@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Query,
+  Req
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -7,10 +17,11 @@ import {
   ApiResponse,
   ApiTags
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
-import { ApiAuthorizedOnly } from '@/shared/guards/auth.guard';
+import { AuthService } from '@/auth/auth.service';
+import { ApiAuthorizedOnly } from '@/shared/guards';
 
-import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { FriendService } from './friend.service';
 import { GetFriendsResponse } from './model/friend.model';
@@ -20,7 +31,10 @@ import { GetFriendsResponse } from './model/friend.model';
 @ApiBearerAuth()
 @Controller('friends')
 export class FriendController {
-  constructor(private readonly friendService: FriendService) {}
+  constructor(
+    private readonly friendService: FriendService,
+    private readonly authService: AuthService
+  ) {}
 
   @Post('request')
   @ApiOperation({ summary: 'Отправить запрос дружбы' })
@@ -34,10 +48,20 @@ export class FriendController {
     return this.friendService.acceptFriendRequest(params.requestId);
   }
 
-  @Delete('remove/:userId/:friendId')
+  @Post('cancel/:requestId')
+  @ApiParam({ name: 'requestId', type: Number })
+  cancelRequest(@Param() params: { requestId: number }) {
+    return this.friendService.cancelFriendRequest(params.requestId);
+  }
+
+  @Delete('remove/:friendId')
   @ApiOperation({ summary: 'Удалить друга' })
-  removeFriend(@Param() params: RemoveFriendDto) {
-    return this.friendService.removeFriend(params.userId, params.friendId);
+  async removeFriend(@Req() req: Request, @Param() params: { friendId: number }) {
+    const userResponse = await this.authService.getUserByToken(req.cookies.session);
+
+    if (!userResponse) throw new NotFoundException('Пользователь не найден');
+
+    return this.friendService.removeFriend(userResponse.user.id, params.friendId);
   }
 
   @Get(':userId')

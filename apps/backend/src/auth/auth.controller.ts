@@ -2,7 +2,7 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { ApiAuthorizedOnly } from '@/shared/guards/auth.guard';
+import { ApiAuthorizedOnly } from '@/shared/guards';
 
 import { AuthService } from './auth.service';
 import { SigninDto } from './dto/signin.dto';

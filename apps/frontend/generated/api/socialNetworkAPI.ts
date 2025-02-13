@@ -17,7 +17,9 @@ import type {
   GetUserResponse,
   SendFriendRequestDto,
   SigninDto,
-  SignupDto
+  SignupDto,
+  User,
+  UserWithFriends
 } from './'
 
 
@@ -31,6 +33,28 @@ export const userControllerGetProfile = <TData = AxiosResponse<GetUserResponse>>
  ): Promise<TData> => {
     return axios.default.get(
       `/user`,options
+    );
+  }
+
+/**
+ * @summary Получить пользователя по ID
+ */
+export const userControllerGetUserById = <TData = AxiosResponse<UserWithFriends>>(
+    userId: number, options?: AxiosRequestConfig
+ ): Promise<TData> => {
+    return axios.default.get(
+      `/user/${userId}`,options
+    );
+  }
+
+/**
+ * @summary Получить всех пользователей
+ */
+export const userControllerGetAllUsers = <TData = AxiosResponse<User[]>>(
+     options?: AxiosRequestConfig
+ ): Promise<TData> => {
+    return axios.default.get(
+      `/user/all`,options
     );
   }
 
@@ -116,6 +140,8 @@ export const friendControllerGetFriends = <TData = AxiosResponse<GetFriendsRespo
   }
 
 export type UserControllerGetProfileResult = AxiosResponse<GetUserResponse>
+export type UserControllerGetUserByIdResult = AxiosResponse<UserWithFriends>
+export type UserControllerGetAllUsersResult = AxiosResponse<User[]>
 export type AuthControllerSignUpResult = AxiosResponse<void>
 export type AuthControllerSignInResult = AxiosResponse<void>
 export type AuthControllerSignOutResult = AxiosResponse<void>

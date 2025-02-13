@@ -69,14 +69,14 @@ export class AuthService {
   private async generateTokens(userId: number, response: Response) {
     const payload = { userId };
     const session = await this.jwtService.signAsync(payload, {
-      expiresIn: '1h'
+      expiresIn: '1d'
     });
 
     response.cookie('session', session, {
-      expires: new Date(Date.now() + 60 * 60 * 1000),
-      sameSite: 'none',
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      sameSite: 'lax',
       httpOnly: true,
-      secure: true
+      secure: process.env.NODE_ENV === 'production'
     });
 
     return { message: 'Авторизация успешна' };
@@ -104,13 +104,11 @@ export class AuthService {
 
     if (!user) throw new NotFoundException();
 
-    const { sentRequests, receivedRequests, ...cleanUser } = instanceToPlain(user);
-
     return {
       user: {
-        ...cleanUser,
+        ...instanceToPlain(user),
         friends: user.friends
       }
-    };
+    } as { user: User };
   }
 }

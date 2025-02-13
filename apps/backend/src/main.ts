@@ -9,6 +9,8 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useWebSocketAdapter(new IoAdapter(app));
+
   const config = new DocumentBuilder().setTitle('Social Network API').setVersion('1.0').build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -22,8 +24,6 @@ async function bootstrap() {
     origin: 'http://localhost:5173',
     credentials: true
   });
-
-  app.useWebSocketAdapter(new IoAdapter(app));
 
   app.useGlobalPipes(
     new ValidationPipe({

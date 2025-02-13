@@ -1,17 +1,113 @@
-import { AppShell, Box, Flex, rem, useMantineTheme } from '@mantine/core';
+import { AppShell, Box, Flex, rem, Text, useMantineTheme } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { io } from 'socket.io-client';
+
+import type { User } from '@/generated/api';
+
+import { useGetUserQuery } from '@/utils/api/hooks';
+
 import { Header, Sidebar } from './components';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const theme = useMantineTheme();
+  const navigate = useNavigate();
+
+  const { data: userResponse, refetch } = useGetUserQuery();
+  const user = userResponse?.data.user;
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const socket = io('http://localhost:3000', {
+      auth: { user: { id: user.id } }
+    });
+
+    socket.on('connect', () => console.log('✅ Соединение установлено'));
+
+    socket.on('friend_request', (data: { user: User }) => {
+      refetch();
+      notifications.show({
+        title: 'Новый запрос в друзья',
+        message: (
+          <Flex align='center' gap={4}>
+            Пользователь{' '}
+            {
+              <Text
+                style={{
+                  cursor: 'pointer'
+                }}
+                c='blue'
+                fw={500}
+                size='sm'
+                td='underline'
+                onClick={() =>
+                  navigate({ to: '/user/$id', params: { id: data.user.id.toString() } })
+                }
+              >
+                {' '}
+                {data.user.name}{' '}
+              </Text>
+            }{' '}
+            хочет добавить вас в друзья
+          </Flex>
+        ),
+        color: 'green'
+      });
+    });
+
+    const handleFriendStatus = (data: { status: string; recipient: User; requester: User }) => {
+      refetch();
+      if (user.id === data.requester.id && data.status === 'ACCEPTED') {
+        notifications.show({
+          title: 'Новый друг!',
+          message: (
+            <Flex align='center' gap={4}>
+              Пользователь{' '}
+              {
+                <Text
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                  c='blue'
+                  fw={500}
+                  size='sm'
+                  td='underline'
+                  onClick={() =>
+                    navigate({ to: '/user/$id', params: { id: data.recipient.id.toString() } })
+                  }
+                >
+                  {' '}
+                  {data.recipient.name}{' '}
+                </Text>
+              }{' '}
+              принял ваш запрос в друзья
+            </Flex>
+          ),
+          color: 'green'
+        });
+      }
+    };
+
+    socket.on('friend_status', handleFriendStatus);
+
+    socket.on('disconnect', () => console.log('❌ Соединение закрыто'));
+
+    return () => {
+      socket.off('friend_status', handleFriendStatus);
+      socket.disconnect();
+    };
+  }, [user?.id]);
 
   return (
     <Box
-      maw={rem(1080)}
       style={{
         maxWidth: rem(1080),
         margin: '0 auto',
         minHeight: '100vh'
       }}
+      maw={rem(1080)}
     >
       <AppShell
         styles={{

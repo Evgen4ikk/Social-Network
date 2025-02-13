@@ -5,7 +5,8 @@ import { User } from '@/user/entity/user.entity';
 export enum FriendStatus {
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
-  DECLINED = 'DECLINED'
+  DECLINED = 'DECLINED',
+  DELETED = 'DELETED'
 }
 
 @Entity()
