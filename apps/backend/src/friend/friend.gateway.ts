@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { instanceToPlain } from 'class-transformer';
 import { Server, Socket } from 'socket.io';
 
 import { ApiAuthorizedOnly } from '@/shared/guards/auth.guard';
@@ -30,11 +31,29 @@ export class FriendGateway {
     }
   }
 
-  sendFriendRequestUpdate(user: User, recipientId: number) {
-    this.server.to(`user_${recipientId}`).emit('friend_request', { user });
+  sendFriendRequestUpdate(user: User, recipientId: number, requestId: number) {
+    this.server.to(`user_${recipientId}`).emit('friend_request', {
+      id: requestId,
+      requester: user,
+      status: FriendStatus.PENDING
+    });
   }
 
-  sendFriendStatusUpdate(recipient: User, requester: User, status: FriendStatus) {
-    this.server.to(`user_${requester.id}`).emit('friend_status', { status, recipient, requester });
+  sendFriendStatusUpdate(
+    recipient: User,
+    requester: User,
+    status: FriendStatus,
+    requestId: number
+  ) {
+    this.server.to(`user_${requester.id}`).emit('friend_status', {
+      status,
+      requestId,
+      recipient: instanceToPlain(recipient)
+    });
+    this.server.to(`user_${recipient.id}`).emit('friend_status', {
+      status,
+      requestId,
+      requester: instanceToPlain(requester)
+    });
   }
 }

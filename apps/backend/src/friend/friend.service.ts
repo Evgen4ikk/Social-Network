@@ -48,7 +48,8 @@ export class FriendService {
       status: FriendStatus.PENDING
     });
 
-    this.friendGateway.sendFriendRequestUpdate(sender, recipientId);
+    this.friendGateway.sendFriendRequestUpdate(sender, recipientId, request.id);
+
     return request;
   }
 
@@ -68,7 +69,8 @@ export class FriendService {
     this.friendGateway.sendFriendStatusUpdate(
       updated.recipient,
       updated.requester,
-      FriendStatus.ACCEPTED
+      FriendStatus.ACCEPTED,
+      requestId
     );
 
     return instanceToPlain(updated);
@@ -87,7 +89,8 @@ export class FriendService {
     this.friendGateway.sendFriendStatusUpdate(
       request.recipient,
       request.requester,
-      FriendStatus.DECLINED
+      FriendStatus.DECLINED,
+      requestId
     );
   }
 
@@ -101,12 +104,6 @@ export class FriendService {
     });
 
     if (!relation) throw new NotFoundException('Связь не найдена');
-
-    this.friendGateway.sendFriendStatusUpdate(
-      relation.recipient,
-      relation.requester,
-      FriendStatus.DELETED
-    );
 
     await this.friendRepo.remove(relation);
   }

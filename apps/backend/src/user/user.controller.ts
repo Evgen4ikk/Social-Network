@@ -4,7 +4,13 @@ import { Request } from 'express';
 
 import { ApiAuthorizedOnly } from '@/shared/guards';
 
-import { GetUserResponse, User, UserWithFriends } from './model/user.model';
+import {
+  GetUserResponse,
+  receivedRequests,
+  sentRequests,
+  User,
+  UserWithFriends
+} from './model/user.model';
 import { UserService } from './user.service';
 
 @ApiAuthorizedOnly()
@@ -19,6 +25,34 @@ export class UserController {
     const token = req.cookies.session;
 
     return this.userService.getProfile(token);
+  }
+
+  @Get('sent-requests')
+  @ApiOperation({ summary: 'Получить отправленные запросы' })
+  @ApiResponse({
+    status: 200,
+    description: 'Получить отправленные запросы',
+    type: sentRequests,
+    isArray: true
+  })
+  getUserSentRequests(@Req() req: Request) {
+    const token = req.cookies.session;
+
+    return this.userService.getUserSentRequests(token);
+  }
+
+  @Get('received-requests')
+  @ApiOperation({ summary: 'Получить полученные запросы' })
+  @ApiResponse({
+    status: 200,
+    description: 'Получить полученные запросы',
+    type: receivedRequests,
+    isArray: true
+  })
+  getUserReceivedRequests(@Req() req: Request) {
+    const token = req.cookies.session;
+
+    return this.userService.getUserReceivedRequests(token);
   }
 
   @Get('all')

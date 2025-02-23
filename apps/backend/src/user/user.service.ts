@@ -18,9 +18,13 @@ export class UserService {
   ) {}
 
   async getProfile(token: string) {
-    const user = await this.authService.getUserByToken(token);
+    const userResponse = await this.authService.getUserByToken(token);
 
-    return instanceToPlain(user);
+    if (!userResponse) throw new NotFoundException('Пользователь не найден');
+
+    const { sentRequests, receivedRequests, ...cleanUser } = instanceToPlain(userResponse.user);
+
+    return { ...cleanUser, friends: userResponse.user.friends };
   }
 
   async getAllUsers() {
@@ -44,5 +48,21 @@ export class UserService {
     const { sentRequests, receivedRequests, ...cleanUser } = instanceToPlain(user);
 
     return { ...cleanUser, friends: user.friends };
+  }
+
+  async getUserSentRequests(token: string) {
+    const userResponse = await this.authService.getUserByToken(token);
+
+    if (!userResponse) throw new NotFoundException('Пользователь не найден');
+
+    return instanceToPlain(userResponse.user.sentRequests);
+  }
+
+  async getUserReceivedRequests(token: string) {
+    const userResponse = await this.authService.getUserByToken(token);
+
+    if (!userResponse) throw new NotFoundException('Пользователь не найден');
+
+    return instanceToPlain(userResponse.user.receivedRequests);
   }
 }

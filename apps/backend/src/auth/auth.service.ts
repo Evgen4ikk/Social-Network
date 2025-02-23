@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException
-} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
@@ -88,27 +83,53 @@ export class AuthService {
   }
 
   public async getUserByToken(token: string) {
-    const payload: { userId: number } = await this.jwtService.verifyAsync(token, {
-      secret: process.env.JWT_SECRET
-    });
+    if (!token) return false;
 
-    const user = await this.userRepository.findOne({
-      where: { id: payload.userId },
-      relations: [
-        'sentRequests',
-        'receivedRequests',
-        'sentRequests.recipient',
-        'receivedRequests.requester'
-      ]
-    });
+    try {
+      const payload: { userId: number } = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET
+      });
 
-    if (!user) throw new NotFoundException();
+      const user = await this.userRepository.findOne({
+        where: { id: payload.userId },
+        relations: [
+          'sentRequests',
+          'receivedRequests',
+          'sentRequests.recipient',
+          'receivedRequests.requester'
+        ]
+      });
 
-    return {
-      user: {
-        ...instanceToPlain(user),
-        friends: user.friends
-      }
-    } as { user: User };
+      if (!user) return false;
+
+      return {
+        user: {
+          ...instanceToPlain(user),
+          friends: user.friends
+        }
+      } as { user: User };
+    } catch {
+      return false;
+    }
+  }
+
+  public async checkSession(token: string) {
+    if (!token)
+      return {
+        success: false
+      };
+
+    try {
+      await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET
+      });
+      return {
+        success: true
+      };
+    } catch {
+      return {
+        success: false
+      };
+    }
   }
 }

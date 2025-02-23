@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { ApiAuthorizedOnly } from '@/shared/guards';
 
@@ -12,6 +12,13 @@ import { SignupDto } from './dto/signup.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @ApiOperation({ summary: 'Проверка сессии' })
+  @ApiBearerAuth()
+  @Get('check-session')
+  async checkSession(@Req() req: Request) {
+    return this.authService.checkSession(req.cookies.session);
+  }
 
   @ApiOperation({ summary: 'Регистрация пользователя' })
   @ApiBody({ type: SignupDto })

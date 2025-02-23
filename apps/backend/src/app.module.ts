@@ -11,9 +11,11 @@ import { UserModule } from './user/user.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      username: 'postgres',
-      password: 'postgres',
-      database: 'SocialNetwork',
+      host: 'localhost',
+      port: 5432,
+      username: 'admin',
+      password: '1234',
+      database: 'socialNetwork',
       entities: [User, Friend],
       synchronize: true
     }),
